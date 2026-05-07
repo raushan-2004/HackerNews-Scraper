@@ -46,7 +46,7 @@ export const scrapeHackerNews = async () => {
         await Story.findOneAndUpdate(
           { url: storyData.url },      // Find by URL
           { $set: storyData },         // Update fields
-          { upsert: true, new: true }  // Create if doesn't exist
+          { upsert: true, returnDocument: 'after' }  // Create if doesn't exist
         );
         savedCount++;
       }
