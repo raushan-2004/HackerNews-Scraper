@@ -1,0 +1,59 @@
+### HackerNews Scraper API Tests
+### Use VS Code REST Client or Bruno/Postman to run these
+
+@baseUrl = http://localhost:5000/api
+
+### 1. Register User
+# @name register
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Test User",
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+###
+
+### 2. Login User
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+### 
+
+### Extract Token from login response (Manual copy/paste if not using env vars in REST client)
+@token = {{login.response.body.token}}
+
+###
+
+### 3. Trigger Scraper
+POST {{baseUrl}}/scrape
+
+###
+
+### 4. Get All Stories
+# @name getStories
+GET {{baseUrl}}/stories
+
+###
+
+### Extract first story ID
+@storyId = {{getStories.response.body.0._id}}
+
+###
+
+### 5. Get Single Story
+GET {{baseUrl}}/stories/{{storyId}}
+
+###
+
+### 6. Toggle Bookmark (Requires valid JWT Token)
+POST {{baseUrl}}/stories/{{storyId}}/bookmark
+Authorization: Bearer {{token}}
