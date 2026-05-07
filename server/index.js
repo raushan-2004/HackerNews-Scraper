@@ -1,7 +1,8 @@
-const express = require('express');
-const cors = require('cors');
-const dotenv = require('dotenv');
-const connectDB = require('./config/db');
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import connectDB from './config/db.js';
+import authRoutes from './routes/authRoutes.js';
 
 // Load env vars
 dotenv.config();
@@ -16,7 +17,8 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-// app.use('/api/users', require('./routes/userRoutes')); // Example
+app.use('/api/auth', authRoutes);
+
 app.get('/', (req, res) => {
   res.send('API is running...');
 });

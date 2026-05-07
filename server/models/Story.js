@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const storySchema = new mongoose.Schema(
   {
@@ -18,7 +18,7 @@ const storySchema = new mongoose.Schema(
       type: String,
     },
     postedAt: {
-      type: String, // String allows storing raw HN time format (e.g., "3 hours ago")
+      type: String,
     },
   },
   {
@@ -28,4 +28,4 @@ const storySchema = new mongoose.Schema(
 
 const Story = mongoose.model('Story', storySchema);
 
-module.exports = Story;
+export default Story;
