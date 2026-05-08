@@ -19,7 +19,7 @@ const Home = () => {
     setError(null);
     try {
       const { data } = await api.get('/stories');
-      setStories(data);
+      setStories(data.stories || []);
     } catch (err) {
       console.error('Error fetching stories', err);
       setError('Failed to load stories. Please try again later.');
@@ -87,7 +87,7 @@ const Home = () => {
           // Display 6 skeletons while loading
           Array.from({ length: 6 }).map((_, i) => <StorySkeleton key={i} />)
         ) : (
-          stories.map(story => (
+          stories.slice(0, 10).map(story => (
             <StoryCard 
               key={story._id} 
               story={story} 

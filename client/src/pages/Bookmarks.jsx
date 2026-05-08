@@ -17,7 +17,7 @@ const Bookmarks = () => {
     try {
       const { data } = await api.get('/stories');
       // Filter stories that are in user's bookmarks
-      const bookmarked = data.filter(story => user?.bookmarks?.includes(story._id));
+      const bookmarked = (data.stories || []).filter(story => user?.bookmarks?.includes(story._id));
       setStories(bookmarked);
     } catch (error) {
       console.error('Error fetching stories', error);
