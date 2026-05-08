@@ -65,5 +65,12 @@ root/
    - Start Server: `npm run dev` (in /server)
    - Start Client: `npm run dev` (in /client)
 
+## 🔐 Test Credentials
+
+Use these credentials to test the authentication and bookmarking features without creating a new account:
+
+- **Email**: `test123@gmail.com`
+- **Password**: `test@123`
+
 ---
 Built with ❤️ for advanced web development.
