@@ -7,32 +7,39 @@ import User from '../models/User.js';
 // @access  Public
 export const getStories = async (req, res) => {
   try {
-    const page = parseInt(req.query.page, 10) || 1;
-    const limit = parseInt(req.query.limit, 10) || 10;
+    let page = parseInt(req.query.page, 10);
+    let limit = parseInt(req.query.limit, 10);
+
+    // Validation
+    if (isNaN(page) || page < 1) page = 1;
+    if (isNaN(limit) || limit < 1) limit = 10;
+    if (limit > 50) limit = 50;
+
     const skip = (page - 1) * limit;
 
-    const count = await Story.countDocuments({});
+    // Use Promise.all to fetch count and stories in parallel
+    const [totalStories, stories] = await Promise.all([
+      Story.countDocuments({}),
+      Story.find({})
+        .sort({ points: -1, createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean() // Optimize query performance
+    ]);
 
-    if (count === 0) {
-      return res.json({
-        success: true,
-        count: 0,
-        currentPage: page,
-        totalPages: 0,
-        stories: []
-      });
-    }
+    const totalPages = Math.ceil(totalStories / limit);
 
-    const stories = await Story.find({})
-      .sort({ points: -1, createdAt: -1 })
-      .skip(skip)
-      .limit(limit);
-
+    // Return response in the required format
     res.json({
       success: true,
-      count: stories.length,
-      currentPage: page,
-      totalPages: Math.ceil(count / limit),
+      pagination: {
+        totalStories,
+        totalPages,
+        currentPage: page,
+        limit,
+        hasNextPage: page < totalPages,
+        hasPrevPage: page > 1
+      },
       stories: stories
     });
   } catch (error) {

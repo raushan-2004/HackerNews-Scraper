@@ -23,7 +23,7 @@ const StoryCard = ({ story, onBookmark, isBookmarked }) => {
         </h3>
         <button 
           onClick={() => onBookmark(story._id)}
-          className={`p-2 rounded-full transition-colors flex-shrink-0 ${isBookmarked ? 'text-orange-500 bg-orange-500/10' : 'text-gray-500 hover:text-orange-400 bg-gray-700/50'}`}
+          className={`p-2 rounded-full transition-colors cursor-pointer flex-shrink-0 ${isBookmarked ? 'text-orange-500 bg-orange-500/10' : 'text-gray-500 hover:text-orange-400 bg-gray-700/50'}`}
           title={isBookmarked ? "Remove Bookmark" : "Add Bookmark"}
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill={isBookmarked ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor">

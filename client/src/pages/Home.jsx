@@ -2,24 +2,28 @@ import React, { useEffect, useState, useContext } from 'react';
 import api from '../services/api.js';
 import StoryCard from '../components/StoryCard.jsx';
 import StorySkeleton from '../components/StorySkeleton.jsx';
+import Pagination from '../components/Pagination.jsx';
 import { AuthContext } from '../context/AuthContext.jsx';
 
 const Home = () => {
   const [stories, setStories] = useState([]);
+  const [pagination, setPagination] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { user, updateUserBookmarks } = useContext(AuthContext);
 
   useEffect(() => {
-    fetchStories();
-  }, []);
+    fetchStories(currentPage);
+  }, [currentPage]);
 
-  const fetchStories = async () => {
+  const fetchStories = async (page = 1) => {
     setLoading(true);
     setError(null);
     try {
-      const { data } = await api.get('/stories');
+      const { data } = await api.get(`/stories?page=${page}&limit=10`);
       setStories(data.stories || []);
+      setPagination(data.pagination || null);
     } catch (err) {
       console.error('Error fetching stories', err);
       setError('Failed to load stories. Please try again later.');
@@ -28,12 +32,23 @@ const Home = () => {
     }
   };
 
+  const handlePageChange = (newPage) => {
+    if (newPage < 1 || (pagination && newPage > pagination.totalPages)) return;
+    setCurrentPage(newPage);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const triggerScrape = async () => {
     setLoading(true);
     setError(null);
     try {
       await api.post('/scrape');
-      await fetchStories();
+      // After scraping, reset to page 1 to see latest
+      if (currentPage === 1) {
+        await fetchStories(1);
+      } else {
+        setCurrentPage(1);
+      }
     } catch (err) {
       console.error('Error refreshing feed', err);
       setError('Failed to scrape new stories. The backend may be busy.');
@@ -84,10 +99,11 @@ const Home = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {loading ? (
-          // Display 6 skeletons while loading
-          Array.from({ length: 6 }).map((_, i) => <StorySkeleton key={i} />)
+          // Display skeletons while loading based on limit
+          Array.from({ length: 9 }).map((_, i) => <StorySkeleton key={i} />)
         ) : (
-          stories.slice(0, 10).map(story => (
+          // Removed hardcoded slice(0, 10), relying on backend limit
+          stories.map(story => (
             <StoryCard 
               key={story._id} 
               story={story} 
@@ -103,6 +119,14 @@ const Home = () => {
           <p className="text-gray-400 text-xl mb-4">No stories available.</p>
           <p className="text-gray-500">Click "Refresh Feed" to scrape the latest from HackerNews.</p>
         </div>
+      )}
+
+      {!loading && stories.length > 0 && (
+        <Pagination 
+          pagination={pagination} 
+          onPageChange={handlePageChange} 
+          loading={loading} 
+        />
       )}
     </div>
   );
