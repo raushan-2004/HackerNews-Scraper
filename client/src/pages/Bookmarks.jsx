@@ -7,7 +7,7 @@ import { AuthContext } from '../context/AuthContext.jsx';
 const Bookmarks = () => {
   const [stories, setStories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { user } = useContext(AuthContext);
+  const { user, updateUserBookmarks } = useContext(AuthContext);
 
   useEffect(() => {
     fetchBookmarkedStories();
@@ -28,8 +28,9 @@ const Bookmarks = () => {
 
   const toggleBookmark = async (id) => {
     try {
-      await api.post(`/stories/${id}/bookmark`);
-      // Update local UI immediately
+      const { data } = await api.post(`/stories/${id}/bookmark`);
+      updateUserBookmarks(data.bookmarks);
+      // Update local UI immediately to remove it from the Bookmarks page
       setStories(stories.filter(s => s._id !== id));
     } catch (error) {
       console.error('Error toggling bookmark', error);

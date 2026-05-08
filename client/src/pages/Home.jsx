@@ -8,7 +8,7 @@ const Home = () => {
   const [stories, setStories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { user } = useContext(AuthContext);
+  const { user, updateUserBookmarks } = useContext(AuthContext);
 
   useEffect(() => {
     fetchStories();
@@ -47,9 +47,8 @@ const Home = () => {
       return;
     }
     try {
-      await api.post(`/stories/${id}/bookmark`);
-      // Simple alert for now - in a full app we'd update user.bookmarks in AuthContext
-      alert('Bookmark updated successfully!');
+      const { data } = await api.post(`/stories/${id}/bookmark`);
+      updateUserBookmarks(data.bookmarks);
     } catch (err) {
       console.error('Error toggling bookmark', err);
       alert('Failed to update bookmark');
