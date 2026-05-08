@@ -26,6 +26,14 @@ root/
 - **Secure Authentication**: User registration and login powered by JWT and Bcrypt.
 - **Premium UI**: Sleek, responsive design built with Tailwind CSS.
 
+## 🔗 Live Demo
+
+[**HackerNews Scraper Live**](https://hacker-news-scraper-two.vercel.app/)
+
+> [!NOTE]
+> If you are seeing a loading screen, it means **Render** is starting the backend. Please wait a few seconds or reload the site.
+
+
 ## 🏁 Getting Started
 
 ### Prerequisites
