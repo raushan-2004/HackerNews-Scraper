@@ -28,6 +28,10 @@ app.use('/api/auth', authRoutes);
 app.use('/api/scrape', scraperRoutes);
 app.use('/api/stories', storyRoutes);
 
+app.get('/api', (req, res) => {
+  res.json({ message: 'HackerNews Scraper API is running...' });
+});
+
 app.get('/', (req, res) => {
   res.send('API is running...');
 });
